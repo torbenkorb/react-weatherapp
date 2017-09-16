@@ -3,10 +3,26 @@ import Citylist from './Citylist';
 
 class Drawer extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            inlineStyle: {}
+        }
+
+        this.drawer = {
+            startX: 0,
+            currX: 0,
+            isTouched: false
+        };
+
+        this.onTouchHandler = this.onTouchHandler.bind(this);
+        this.onTouchMoveHandler = this.onTouchMoveHandler.bind(this);
+        this.onTouchEndHandler = this.onTouchEndHandler.bind(this);
+        this.swipeDrawer = this.swipeDrawer.bind(this);
+    }
 
     componentDidUpdate() {
-        //document.body.classList.toggle('darkClass', nextProps.isDark)
-
         if(this.props.isActive) {
             document.body.classList.add('drawer--open');
         } else {
@@ -14,16 +30,68 @@ class Drawer extends Component {
         }
     }
 
+    onTouchHandler(event) {
+        this.drawer.startX = event.touches[0].pageX;
+        this.drawer.currX = this.drawer.startX;
+        this.drawer.isTouched = true;
+        requestAnimationFrame(this.swipeDrawer);
+    }
+
+    onTouchMoveHandler(event) {
+        if(!this.drawer.isTouched) {
+            return;
+        }
+        this.drawer.currX = event.touches[0].pageX;
+    }
+
+    onTouchEndHandler(event) {
+        if(!this.drawer.isTouched) {
+            return;
+        }
+        this.drawer.isTouched = false;
+
+        var newState = {
+            inlineStyle: {
+                transform: ''
+            }
+        }
+
+        if(Math.min(0, this.drawer.currX - this.drawer.startX) < -40 ) {
+            this.props.toggleDrawer();
+        }
+
+        this.setState(prevState => newState);
+    }
+
+    swipeDrawer() {
+        if(!this.drawer.isTouched) {
+            return;
+        }
+        requestAnimationFrame(this.swipeDrawer);
+
+        var translateX = Math.min(0, this.drawer.currX - this.drawer.startX);
+        var transformStyles = 'translateX(' + translateX + 'px)';
+
+        this.setState(prevState => ({
+            inlineStyle: {
+                transform: transformStyles
+            }
+        }));
+    }
+
     render() {
 
         return (
             <div className={'Drawer' + (this.props.isActive ? ' active' : '')}
-                onTouchStart={this.props.onTouchHandler}
-                onTouchMove={this.props.onTouchMoveHandler}
-                onTouchEnd={this.props.onTouchEndHandler}
-                style={this.props.inlineStyle}
-            >
-                <div className="drawer__header"><h2>Select a city</h2> <i onClick={this.props.toggleDrawer} className="material-icons drawer__close">close</i></div>
+                onTouchStart={this.onTouchHandler}
+                onTouchMove={this.onTouchMoveHandler}
+                onTouchEnd={this.onTouchEndHandler}
+                style={this.state.inlineStyle}>
+
+                <div className="drawer__header">
+                    <h2>Select a city</h2>
+                    <i onClick={this.props.toggleDrawer} className="material-icons drawer__close">close</i>
+                </div>
                 <Citylist cities={this.props.cities} selectCity={this.props.selectCity} getLocation={this.props.getLocation} />
             </div>
         );

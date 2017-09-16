@@ -17,7 +17,6 @@ class Citylist extends Component {
         return (
             <div className="Citylist">
                 <ul>
-                    <li onClick={this.props.getLocation}><i className="material-icons">my_location</i> Current Location</li>
                     {this.listItems}
                 </ul>
             </div>
