@@ -33,6 +33,14 @@ h2 {
   margin: 0 0 30px;
 }
 
+.no-select {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .hint {
   color: rgba(255,255,255,0.5);
   font-size: 14px;
@@ -110,6 +118,11 @@ h2 {
   transition-timing-function: cubic-bezier(0.4, 0.0, 0.6, 1);
   -webkit-transform: translateX(-266px);
           transform: translateX(-266px);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .Drawer.active {
@@ -140,6 +153,11 @@ h2 {
   color: #fff;
   cursor: pointer;
   z-index: 1;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .drawer__activate i {
@@ -172,6 +190,11 @@ h2 {
   cursor: pointer;
   z-index: 1;
   padding: 4px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .Citylist ul {

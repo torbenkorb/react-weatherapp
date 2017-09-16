@@ -38,12 +38,37 @@ var citiesObject = {
       "longitude": -118.2436849
     }
   },
-  "Wiesbaden": {
-    "coords": {
-      "latitude": 50.0854584,
-      "longitude": 8.2389936
+  // "Wiesbaden": {
+  //   "coords": {
+  //     "latitude": 50.0854584,
+  //     "longitude": 8.2389936
+  //   }
+  // }
+}
+
+
+function storageAvailable(type) {
+    try {
+        var storage = window[type],
+            x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
     }
-  }
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            storage.length !== 0;
+    }
 }
 
 class App extends Component {
@@ -51,17 +76,24 @@ class App extends Component {
     constructor() {
         super();
 
-        this.state = {
-            selectedCity: Object.keys(citiesObject)[0],
-            cities: citiesObject,
-            isLoading: true,
-            drawerOpen: false
+        if(!localStorage.getItem('WeatherApp')) {
+            this.state = {
+                selectedCity: Object.keys(citiesObject)[0],
+                cities: citiesObject,
+                isLoading: true,
+                drawerOpen: false
+            }
+        } else {
+            this.state = JSON.parse(localStorage.getItem('WeatherApp'));
         }
+
+
 
         this.selectCity = this.selectCity.bind(this);
         this.updateWeather = this.updateWeather.bind(this);
         this.getCurrentLocation = this.getCurrentLocation.bind(this);
         this.toggleDrawer = this.toggleDrawer.bind(this);
+        this.saveLocalStorage = this.saveLocalStorage.bind(this);
 
         this.getWeatherData(this.state.cities[this.state.selectedCity]);
     }
@@ -85,7 +117,6 @@ class App extends Component {
             }));
             this.getWeatherData(this.state.cities[city]);
         }
-
     }
 
     getCurrentLocation() {
@@ -148,8 +179,18 @@ class App extends Component {
                     }
                     console.log(cityName);
                     _this.setState(prevState => ({
-                        selectedCity: cityName
+                        selectedCity: cityName,
+                        cities: {
+                            ...prevState.cities,
+                            [cityName]: {
+                                coords: {
+                                    latitude: latlng.lat,
+                                    longitude: latlng.lng
+                                }
+                            }
+                        }
                     }));
+                    console.log(cityName + ' was saved to your list of cities.');
                 } else {
                     window.alert('No results found');
                 }
@@ -185,6 +226,7 @@ class App extends Component {
                 weatherAPIData: data,
                 isLoading: false
             }));
+            this.saveLocalStorage();
         }).catch(err => {
             console.log(err);
         });
@@ -197,6 +239,19 @@ class App extends Component {
             drawerOpen: false
         }));
         this.getWeatherData(this.state.cities[this.state.selectedCity]);
+    }
+
+
+    saveLocalStorage() {
+        if (storageAvailable('localStorage')) {
+            // Yippee! We can use localStorage awesomeness
+            console.log('Local Storage available');
+            localStorage.setItem('WeatherApp', JSON.stringify(this.state));
+        }
+        else {
+            // Too bad, no localStorage for us
+            console.log('No Local Storage available. Sorry!');
+        }
     }
 
 
@@ -219,7 +274,6 @@ class App extends Component {
                     selectCity={this.selectCity}
                     isActive={this.state.drawerOpen}
                     toggleDrawer={this.toggleDrawer}
-                    getLocation={this.getCurrentLocation}
                 />
 
                 <div className="app__topbar">
@@ -246,7 +300,7 @@ class App extends Component {
                 </div>
 
 
-                <div className="update-app hint"><i className="material-icons" onClick={this.updateWeather}>update</i> Last updated:&nbsp;
+                <div className="update-app hint"><i className="material-icons no-select" onClick={this.updateWeather}>update</i> Last updated:&nbsp;
                     <DateComponent timestamp={date} />
                 </div>
             </div>
