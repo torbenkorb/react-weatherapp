@@ -76,7 +76,7 @@ class App extends Component {
     constructor() {
         super();
 
-        if(!localStorage.getItem('WeatherApp')) {
+        if(!localStorage.getItem('ReactWeatherApp')) {
             this.state = {
                 selectedCity: Object.keys(citiesObject)[0],
                 cities: citiesObject,
@@ -84,7 +84,7 @@ class App extends Component {
                 drawerOpen: false
             }
         } else {
-            this.state = JSON.parse(localStorage.getItem('WeatherApp'));
+            this.state = JSON.parse(localStorage.getItem('ReactWeatherApp'));
         }
 
 
@@ -246,7 +246,7 @@ class App extends Component {
         if (storageAvailable('localStorage')) {
             // Yippee! We can use localStorage awesomeness
             console.log('Local Storage available');
-            localStorage.setItem('WeatherApp', JSON.stringify(this.state));
+            localStorage.setItem('ReactWeatherApp', JSON.stringify(this.state));
         }
         else {
             // Too bad, no localStorage for us
