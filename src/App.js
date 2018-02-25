@@ -87,25 +87,17 @@ class App extends Component {
             this.state = JSON.parse(localStorage.getItem('ReactWeatherApp'));
         }
 
-
-
-        this.selectCity = this.selectCity.bind(this);
-        this.updateWeather = this.updateWeather.bind(this);
-        this.getCurrentLocation = this.getCurrentLocation.bind(this);
-        this.toggleDrawer = this.toggleDrawer.bind(this);
-        this.saveLocalStorage = this.saveLocalStorage.bind(this);
-
         this.getWeatherData(this.state.cities[this.state.selectedCity]);
     }
 
 
-    toggleDrawer(event) {
+    toggleDrawer = () => {
         this.setState(prevState => ({
             drawerOpen: !prevState.drawerOpen
         }));
     }
 
-    selectCity(event) {
+    selectCity = event => {
         var city = event.target.innerText;
 
         if(this.state.selectedCity !== city) {
@@ -119,7 +111,7 @@ class App extends Component {
         }
     }
 
-    getCurrentLocation() {
+    getCurrentLocation = () => {
         console.log('Geolocation API request here...');
 
         this.setState(prevState => ({
@@ -141,7 +133,7 @@ class App extends Component {
     }
 
 
-    getDeviceGeoLocation() {
+    getDeviceGeoLocation = () => {
         return new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(position => {
                 resolve(position);
@@ -155,14 +147,14 @@ class App extends Component {
     }
 
 
-    getCityByCoords(coords) {
+    getCityByCoords = coords => {
         var gMapsLatLngStr = coords.split(',', 2);
         var gMapsLatLng = {lat: parseFloat(gMapsLatLngStr[0]), lng: parseFloat(gMapsLatLngStr[1])};
         var geocoder = new window.google.maps.Geocoder();
         this.geocodeLatLng(geocoder, gMapsLatLng);
     }
 
-    geocodeLatLng(geocoder, latlng) {
+    geocodeLatLng = (geocoder, latlng) => {
         var _this = this;
         geocoder.geocode({
             'location': latlng,
@@ -200,7 +192,7 @@ class App extends Component {
         });
     }
 
-    getWeatherData(city) {
+    getWeatherData = city => {
         var latitude = city.coords.latitude;
         var longitude = city.coords.longitude;
         var latlng = latitude + "," + longitude;
@@ -233,7 +225,7 @@ class App extends Component {
     }
 
 
-    updateWeather() {
+    updateWeather = () => {
         this.setState(prevState => ({
             isLoading: true,
             drawerOpen: false
@@ -242,7 +234,7 @@ class App extends Component {
     }
 
 
-    saveLocalStorage() {
+    saveLocalStorage = () => {
         if (storageAvailable('localStorage')) {
             // Yippee! We can use localStorage awesomeness
             console.log('Local Storage available');
@@ -255,7 +247,7 @@ class App extends Component {
     }
 
 
-  render() {
+  render = () => {
 
     var api = this.state.weatherAPIData;
 

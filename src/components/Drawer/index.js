@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Citylist from './Citylist';
+import Citylist from '../Citylist';
 
 class Drawer extends Component {
 
