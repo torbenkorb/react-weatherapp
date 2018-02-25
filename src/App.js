@@ -262,7 +262,7 @@ class App extends Component {
     if(api) {
 
         var selectedCity = this.state.selectedCity;
-        var currentTemperature = Math.round(api.currently.apparentTemperature);
+        var currentTemperature = Math.round(api.currently.temperature);
         var currentSummary = api.currently.summary;
         var date = (api.currently.time * 1000);
 
