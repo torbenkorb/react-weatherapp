@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 class Citylist extends Component {
 
     render() {
-
-        var listItems = this.props.cities.map(item => {
+        const listItems = this.props.cities.map(item => {
             return (<li onClick={this.props.selectCity} key={item.toLowerCase()}>{item}</li>);
         });
 

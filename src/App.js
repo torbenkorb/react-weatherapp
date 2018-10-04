@@ -6,7 +6,7 @@ import ForecastList from './components/Forecastlist';
 import GetLocation from './components/GetLocation';
 import WeatherIcon from './components/WeatherIcon';
 
-var citiesObject = {
+const citiesObject = {
   "Frankfurt am Main": {
     "coords": {
       "latitude": 50.1109221,
@@ -102,7 +102,7 @@ class App extends Component {
     }
 
     selectCity = event => {
-        var city = event.target.innerText;
+        const city = event.target.innerText;
 
         if(this.state.selectedCity !== city) {
 
@@ -129,7 +129,7 @@ class App extends Component {
                     console.dir(position);
                     this.getWeatherData(position);
 
-                    var coordsString = position.coords.latitude + ',' + position.coords.longitude;
+                    const coordsString = position.coords.latitude + ',' + position.coords.longitude;
 
                     this.getCityByCoords(coordsString);
                 });
@@ -152,9 +152,9 @@ class App extends Component {
 
 
     getCityByCoords = coords => {
-        var gMapsLatLngStr = coords.split(',', 2);
-        var gMapsLatLng = {lat: parseFloat(gMapsLatLngStr[0]), lng: parseFloat(gMapsLatLngStr[1])};
-        var geocoder = new window.google.maps.Geocoder();
+        const gMapsLatLngStr = coords.split(',', 2);
+        const gMapsLatLng = {lat: parseFloat(gMapsLatLngStr[0]), lng: parseFloat(gMapsLatLngStr[1])};
+        const geocoder = new window.google.maps.Geocoder();
         this.geocodeLatLng(geocoder, gMapsLatLng);
     }
 
@@ -165,9 +165,9 @@ class App extends Component {
         }, (results, status) => {
             if (status === window.google.maps.GeocoderStatus.OK) {
                 if (results) {
-                    var result = results[0].address_components;
-                    var cityName = '';
-                    for(var i=0; i < result.length; ++i) {
+                    const result = results[0].address_components;
+                    let cityName = '';
+                    for(let i=0; i < result.length; ++i) {
                         if((result[i].types.includes('locality') && result[i].long_name.length > 1)
                             || result[i].types.includes('administrative_area_level_1')) {
                             cityName = result[i].long_name;
@@ -198,33 +198,20 @@ class App extends Component {
     }
 
     getWeatherData = city => {
-        var latitude = city.coords.latitude;
-        var longitude = city.coords.longitude;
-        var latlng = latitude + "," + longitude;
+        const latitude = city.coords.latitude;
+        const longitude = city.coords.longitude;
+        const latlng = latitude + "," + longitude;
         const APIEndpoint = 'https://api.teamdigitalcreative.com/darksky/';
-        var apiURL = APIEndpoint + latlng + '?units=si&exclude=flags,hourly,minutely,alerts&' + Date.now();
+        const apiURL = APIEndpoint + latlng + '?units=si&exclude=flags,hourly,minutely,alerts&' + Date.now();
 
-        // if(process.env.NODE_ENV === 'production') {
-        //     apiURL = 'https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/9c5f115423c6a7bdf61901d449355c00/' + latlng + '?units=si&exclude=flags,hourly,minutely,alerts&' + Date.now();
-        // }
-
-        var options = {
-            'Accept-Encoding': 'gzip',
-            'Pragma': 'no-cache',
-            'Cache-Control': 'no-store'
-        }
-
-        fetch(apiURL, {
-            header: new Headers(options),
-            cache: 'no-store'
-        }).then(response => {
-            return response.json();
-        }).then(data => {
+        fetch(apiURL)
+        .then(res => res.ok ? Promise.resolve(res) : res.json().then(Promise.reject.bind(Promise)))
+        .then(res => res.json())
+        .then(data => {
             this.setState(prevState => ({
                 weatherAPIData: data,
                 isLoading: false
-            }));
-            this.saveLocalStorage();
+            }), this.saveLocalStorage);
         }).catch(err => {
             console.log(err);
         });
@@ -255,14 +242,14 @@ class App extends Component {
 
   render = () => {
 
-    var api = this.state.weatherAPIData;
+    const api = this.state.weatherAPIData;
 
     if(api) {
 
-        var selectedCity = this.state.selectedCity;
-        var currentTemperature = Math.round(api.currently.temperature);
-        var currentSummary = api.currently.summary;
-        var date = (api.currently.time * 1000);
+        const selectedCity = this.state.selectedCity;
+        const currentTemperature = Math.round(api.currently.temperature);
+        const currentSummary = api.currently.summary;
+        const date = (api.currently.time * 1000);
 
         return (
             <div className="App">

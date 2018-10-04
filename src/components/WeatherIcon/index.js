@@ -1,7 +1,7 @@
 import React from 'react';
 import './styles.css';
 
-var icons = {
+const icons = {
   "clear-day" : "icon-2",
   "clear-night" : "icon-3",
   "rain" : "icon-18",

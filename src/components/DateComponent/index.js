@@ -1,50 +1,22 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { sameDay } from '../../lib/utilities';
 import './styles.css';
 
+const dateOptions = { weekday: 'long', month: 'short', day: 'numeric' };
+const dateTimeOptions = { weekday: 'long', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 
-var weekdays = [
-    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
-];
+const DateComponent = props => {
+    const dateObject = new Date(props.timestamp);
+    const now = new Date(Date.now());
+    let dateOutput = sameDay(dateObject, now) ? 'Today' : dateObject.toLocaleDateString('en-GB', dateOptions);
 
-var months = [
-    "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
-];
-
-
-class DateComponent extends Component {
-
-    render() {
-
-        var dateObject = new Date(this.props.timestamp);
-
-        var dayOfWeek = weekdays[dateObject.getDay()];
-        var day = dateObject.getDate();
-        var month = months[dateObject.getMonth()].substring(0,3);
-        var fullDate = dayOfWeek + ', ' + day + '. ' + month;
-
-        var now = new Date(Date.now());
-        var nowWeekDay = weekdays[now.getDay()];
-        var nowDay = now.getDate();
-        var nowMonth = months[now.getMonth()].substring(0,3);
-        var nowFullDate = nowWeekDay + ', ' + nowDay + '. ' + nowMonth;
-
-        if(nowFullDate === fullDate) {
-            fullDate = 'Today';
-        }
-
-        if(!this.props.removeTime) {
-            var hours = dateObject.getHours();
-            var minutes = dateObject.getMinutes();
-            if(minutes < 10 ) {
-                minutes = '0' + minutes;
-            }
-            fullDate += ', ' + hours + ':' + minutes;
-        }
-
-        return (
-            <div className="date">{fullDate}</div>
-        );
+    if(!props.removeTime) {
+        dateOutput = dateObject.toLocaleString('en-GB', dateTimeOptions);
     }
+
+    return (
+        <div className="date">{dateOutput}</div>
+    );
 }
 
 export default DateComponent;

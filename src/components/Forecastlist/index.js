@@ -6,11 +6,8 @@ import './styles.css';
 class ForecastList extends Component {
 
     render() {
-
-        var listItems = this.props.listItems.map((item, index) => {
-
-            var dateObject = new Date(item.time * 1000);
-
+        const listItems = this.props.listItems.map((item, index) => {
+            const dateObject = new Date(item.time * 1000);
             return (
                 <li key={index}>
                     <div className="forecast__meta">
