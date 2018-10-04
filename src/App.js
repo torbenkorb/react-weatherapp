@@ -5,7 +5,6 @@ import DateComponent from './components/DateComponent';
 import ForecastList from './components/Forecastlist';
 import GetLocation from './components/GetLocation';
 import WeatherIcon from './components/WeatherIcon';
-import './App.css';
 
 var citiesObject = {
   "Frankfurt am Main": {
@@ -87,6 +86,11 @@ class App extends Component {
             this.state = JSON.parse(localStorage.getItem('ReactWeatherApp'));
         }
 
+
+    }
+
+    componentDidMount = () => {
+        this.setState({isLoading: true});
         this.getWeatherData(this.state.cities[this.state.selectedCity]);
     }
 
@@ -155,22 +159,23 @@ class App extends Component {
     }
 
     geocodeLatLng = (geocoder, latlng) => {
-        var _this = this;
         geocoder.geocode({
             'location': latlng,
             'region': 'es'
-        }, function(results, status) {
+        }, (results, status) => {
             if (status === window.google.maps.GeocoderStatus.OK) {
                 if (results) {
                     var result = results[0].address_components;
                     var cityName = '';
                     for(var i=0; i < result.length; ++i) {
-                        if(result[i].types[0] == "locality") {
+                        if((result[i].types.includes('locality') && result[i].long_name.length > 1)
+                            || result[i].types.includes('administrative_area_level_1')) {
                             cityName = result[i].long_name;
+                            break;
                         }
                     }
                     console.log(cityName);
-                    _this.setState(prevState => ({
+                    this.setState(prevState => ({
                         selectedCity: cityName,
                         cities: {
                             ...prevState.cities,
@@ -196,11 +201,12 @@ class App extends Component {
         var latitude = city.coords.latitude;
         var longitude = city.coords.longitude;
         var latlng = latitude + "," + longitude;
-        var apiURL = latlng + '?units=si&exclude=flags,hourly,minutely,alerts&' + Date.now();
+        const APIEndpoint = 'https://api.teamdigitalcreative.com/darksky/';
+        var apiURL = APIEndpoint + latlng + '?units=si&exclude=flags,hourly,minutely,alerts&' + Date.now();
 
-        if(process.env.NODE_ENV === 'production') {
-            apiURL = 'https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/9c5f115423c6a7bdf61901d449355c00/' + latlng + '?units=si&exclude=flags,hourly,minutely,alerts&' + Date.now();
-        }
+        // if(process.env.NODE_ENV === 'production') {
+        //     apiURL = 'https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/9c5f115423c6a7bdf61901d449355c00/' + latlng + '?units=si&exclude=flags,hourly,minutely,alerts&' + Date.now();
+        // }
 
         var options = {
             'Accept-Encoding': 'gzip',
