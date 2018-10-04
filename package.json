@@ -16,6 +16,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://api.darksky.net/forecast/9c5f115423c6a7bdf61901d449355c00/",
   "homepage": "https://torbenkorb.github.io/react-weatherapp"
 }
