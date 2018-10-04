@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../../css/Date.css';
+import './styles.css';
 
 
 var weekdays = [

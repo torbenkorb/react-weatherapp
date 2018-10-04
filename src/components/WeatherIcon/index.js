@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../css/WeatherIcon.css';
+import './styles.css';
 
 var icons = {
   "clear-day" : "icon-2",

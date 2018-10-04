@@ -1,10 +1,10 @@
  @font-face {
     font-family: 'digicon';
-    src:    url('../fonts/digicon.eot');
-    src:    url('../fonts/digicon.eot?#iefix') format('embedded-opentype'),
-        url('../fonts/digicon.ttf?') format('truetype'),
-        url('../fonts/digicon.woff?') format('woff'),
-        url('../fonts/digicon.svg?#digicon') format('svg');
+    src:    url('fonts/digicon.eot');
+    src:    url('fonts/digicon.eot?#iefix') format('embedded-opentype'),
+        url('fonts/digicon.ttf?') format('truetype'),
+        url('fonts/digicon.woff?') format('woff'),
+        url('fonts/digicon.svg?#digicon') format('svg');
     font-weight: normal;
     font-style: normal;
 }

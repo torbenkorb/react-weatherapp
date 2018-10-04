@@ -1,8 +1,6 @@
-
 * {
   box-sizing: border-box;
 }
-
 
 html, body {
   height: 100%;
@@ -10,9 +8,11 @@ html, body {
 }
 
 body {
-  background-color: #483d8b;
-  color: rgba(0,0,0,0.87);
-  font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #483d8b;
+    color: rgba(0,0,0,0.87);
+    font-family: 'Roboto', sans-serif;
 }
 
 body.drawer--open {
@@ -321,3 +321,4 @@ h2 {
   from { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
   to { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
 }
+

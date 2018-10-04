@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import DateComponent from '../DateComponent';
 import WeatherIcon from '../WeatherIcon';
-import '../../css/List.css';
+import './styles.css';
 
 class ForecastList extends Component {
 
