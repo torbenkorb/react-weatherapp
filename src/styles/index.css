@@ -59,13 +59,7 @@ h2 {
   color: rgba(255,255,255,0.5);
 }
 
-
-
-.App {
-  text-align: center;
-}
-
-.appheader__content .icon-2 {
+.appheader__content .icon-1 {
   -webkit-animation: App-logo-spin infinite 20s linear;
           animation: App-logo-spin infinite 20s linear;
 }

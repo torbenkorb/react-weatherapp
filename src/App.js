@@ -5,8 +5,10 @@ import DateComponent from './components/DateComponent';
 import ForecastList from './components/Forecastlist';
 import GetLocation from './components/GetLocation';
 import WeatherIcon from './components/WeatherIcon';
+import { storageAvailable } from './lib/utilities';
 
-const citiesObject = {
+
+const initialCitiesMap = {
   "Frankfurt am Main": {
     "coords": {
       "latitude": 50.1109221,
@@ -36,61 +38,63 @@ const citiesObject = {
       "latitude": 34.0522342,
       "longitude": -118.2436849
     }
-  },
-  // "Wiesbaden": {
-  //   "coords": {
-  //     "latitude": 50.0854584,
-  //     "longitude": 8.2389936
-  //   }
-  // }
+  }
 }
 
-
-function storageAvailable(type) {
-    try {
-        var storage = window[type],
-            x = '__storage_test__';
-        storage.setItem(x, x);
-        storage.removeItem(x);
-        return true;
-    }
-    catch(e) {
-        return e instanceof DOMException && (
-            // everything except Firefox
-            e.code === 22 ||
-            // Firefox
-            e.code === 1014 ||
-            // test name field too, because code might not be present
-            // everything except Firefox
-            e.name === 'QuotaExceededError' ||
-            // Firefox
-            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-            // acknowledge QuotaExceededError only if there's something already stored
-            storage.length !== 0;
-    }
-}
 
 class App extends Component {
 
-    constructor() {
-        super();
-
+    constructor(props) {
+        super(props);
         if(!localStorage.getItem('ReactWeatherApp')) {
             this.state = {
-                selectedCity: Object.keys(citiesObject)[0],
-                cities: citiesObject,
+                selectedCity: Object.keys(initialCitiesMap)[0],
+                cities: initialCitiesMap,
                 isLoading: true,
-                drawerOpen: false
+                drawerOpen: false,
+                weatherAPIData: {
+                    currently: 0,
+                    daily: {
+                        data: []
+                    }
+                }
             }
         } else {
             this.state = JSON.parse(localStorage.getItem('ReactWeatherApp'));
         }
-
-
     }
 
     componentDidMount = () => {
         this.setState({isLoading: true});
+        this.getWeatherData(this.state.cities[this.state.selectedCity]);
+    }
+
+    getWeatherData = city => {
+        const {latitude, longitude} = city.coords;
+        const latlng = latitude + "," + longitude;
+        const APIEndpoint = 'https://api.teamdigitalcreative.com/darksky/';
+        const apiURL = APIEndpoint + latlng + '?units=si&exclude=flags,hourly,minutely,alerts&' + Date.now();
+
+        fetch(apiURL)
+        .then(res => res.ok ? Promise.resolve(res) : res.json().then(Promise.reject.bind(Promise)))
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            this.setState(prevState => ({
+                weatherAPIData: data,
+                isLoading: false
+            }), this.saveLocalStorage);
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+
+    updateWeather = () => {
+        this.setState(prevState => ({
+            isLoading: true,
+            drawerOpen: false
+        }));
         this.getWeatherData(this.state.cities[this.state.selectedCity]);
     }
 
@@ -103,9 +107,7 @@ class App extends Component {
 
     selectCity = event => {
         const city = event.target.innerText;
-
         if(this.state.selectedCity !== city) {
-
             this.setState(prevState => ({
                 selectedCity: city,
                 isLoading: true,
@@ -197,35 +199,6 @@ class App extends Component {
         });
     }
 
-    getWeatherData = city => {
-        const latitude = city.coords.latitude;
-        const longitude = city.coords.longitude;
-        const latlng = latitude + "," + longitude;
-        const APIEndpoint = 'https://api.teamdigitalcreative.com/darksky/';
-        const apiURL = APIEndpoint + latlng + '?units=si&exclude=flags,hourly,minutely,alerts&' + Date.now();
-
-        fetch(apiURL)
-        .then(res => res.ok ? Promise.resolve(res) : res.json().then(Promise.reject.bind(Promise)))
-        .then(res => res.json())
-        .then(data => {
-            this.setState(prevState => ({
-                weatherAPIData: data,
-                isLoading: false
-            }), this.saveLocalStorage);
-        }).catch(err => {
-            console.log(err);
-        });
-    }
-
-
-    updateWeather = () => {
-        this.setState(prevState => ({
-            isLoading: true,
-            drawerOpen: false
-        }));
-        this.getWeatherData(this.state.cities[this.state.selectedCity]);
-    }
-
 
     saveLocalStorage = () => {
         if (storageAvailable('localStorage')) {
@@ -240,19 +213,15 @@ class App extends Component {
     }
 
 
-  render = () => {
-
-    const api = this.state.weatherAPIData;
-
-    if(api) {
-
+    render = () => {
+        const api = this.state.weatherAPIData;
         const selectedCity = this.state.selectedCity;
         const currentTemperature = Math.round(api.currently.temperature);
         const currentSummary = api.currently.summary;
         const date = (api.currently.time * 1000);
 
         return (
-            <div className="App">
+            <div className="site">
                 <Loader isLoading={this.state.isLoading} />
                 <Drawer
                     cities={Object.keys(this.state.cities)}
@@ -288,16 +257,10 @@ class App extends Component {
                 <div className="update-app hint"><i className="material-icons no-select" onClick={this.updateWeather}>update</i> Last updated:&nbsp;
                     <DateComponent timestamp={date} />
                 </div>
+
             </div>
         );
-    } else {
-        return (
-            <Loader isLoading={this.state.isLoading} />
-        );
     }
-
-
-  }
 }
 
 export default App;
