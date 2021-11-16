@@ -54,7 +54,13 @@ class App extends Component {
                 drawerOpen: false,
                 weatherAPIData: {
                     current: {
-                        temp: 0
+                        temp: 0,
+                        dt: 0,
+                        weather: [
+                            {
+                                description: ''
+                            }
+                        ]
                     },
                     daily: []
                 }
