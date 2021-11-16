@@ -7,19 +7,19 @@ class ForecastList extends Component {
 
     render() {
         const listItems = this.props.listItems.map((item, index) => {
-            const dateObject = new Date(item.time * 1000);
+            const dateObject = new Date(item.dt * 1000);
             return (
                 <li key={index}>
                     <div className="forecast__meta">
                         <DateComponent timestamp={dateObject} removeTime={true} />
-                        <div className="forecast__summary">{item.summary.replace('.', '')}</div>
+                        <div className="forecast__summary">{item.weather[0].description}</div>
                     </div>
                     <div className="forecast__currTemp">
                         <div>
-                            <div>{Math.round(item.temperatureMax)}°</div>
-                            <div className="hint">{Math.round(item.temperatureMin)}°</div>
+                            <div>{Math.round(item.temp.max)}°</div>
+                            <div className="hint">{Math.round(item.temp.min)}°</div>
                         </div>
-                        <WeatherIcon icon={item.icon} />
+                        <WeatherIcon icon={item.weather[0].icon} />
                     </div>
                 </li>
             );

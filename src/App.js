@@ -39,7 +39,7 @@ const initialCitiesMap = {
             "longitude": -118.2436849
         }
     }
-}
+};
 
 
 class App extends Component {
@@ -53,12 +53,12 @@ class App extends Component {
                 isLoading: true,
                 drawerOpen: false,
                 weatherAPIData: {
-                    currently: 0,
-                    daily: {
-                        data: []
-                    }
+                    current: {
+                        temp: 0
+                    },
+                    daily: []
                 }
-            }
+            };
         } else {
             this.state = JSON.parse(localStorage.getItem('ReactWeatherApp'));
         }
@@ -67,27 +67,26 @@ class App extends Component {
     componentDidMount = () => {
         this.setState({ isLoading: true });
         this.getWeatherData(this.state.cities[this.state.selectedCity]);
-    }
+    };
 
     getWeatherData = city => {
         const { latitude, longitude } = city.coords;
-        const latlng = latitude + "," + longitude;
-        const APIEndpoint = 'https://api.teamdigitalcreative.com/darksky/';
-        const apiURL = APIEndpoint + latlng + '?units=si&exclude=flags,hourly,minutely,alerts&' + Date.now();
+        const latlng = `lat=${latitude}&lon=${longitude}`;
+        const APIEndpoint = 'https://j3kw67la1a.execute-api.eu-central-1.amazonaws.com/onecall?';
+        const apiURL = APIEndpoint + latlng + '&units=metric&exclude=minutely,hourly&' + Date.now();
 
         fetch(apiURL)
             .then(res => res.ok ? Promise.resolve(res) : res.json().then(Promise.reject.bind(Promise)))
             .then(res => res.json())
             .then(data => {
-                console.log(data);
                 this.setState(prevState => ({
                     weatherAPIData: data,
                     isLoading: false
                 }), this.saveLocalStorage);
             }).catch(err => {
-                console.log(err);
+                console.error(err);
             });
-    }
+    };
 
 
     updateWeather = () => {
@@ -96,14 +95,14 @@ class App extends Component {
             drawerOpen: false
         }));
         this.getWeatherData(this.state.cities[this.state.selectedCity]);
-    }
+    };
 
 
     toggleDrawer = () => {
         this.setState(prevState => ({
             drawerOpen: !prevState.drawerOpen
         }));
-    }
+    };
 
     selectCity = event => {
         const city = event.target.innerText;
@@ -115,10 +114,9 @@ class App extends Component {
             }));
             this.getWeatherData(this.state.cities[city]);
         }
-    }
+    };
 
     getCurrentLocation = () => {
-        console.log('Geolocation API request here...');
 
         this.setState(prevState => ({
             isLoading: true,
@@ -128,15 +126,12 @@ class App extends Component {
         if (navigator.geolocation) {
             this.getDeviceGeoLocation()
                 .then(position => {
-                    console.dir(position);
                     this.getWeatherData(position);
-
                     const coordsString = position.coords.latitude + ',' + position.coords.longitude;
-
                     this.getCityByCoords(coordsString);
                 });
         }
-    }
+    };
 
 
     getDeviceGeoLocation = () => {
@@ -144,13 +139,13 @@ class App extends Component {
             navigator.geolocation.getCurrentPosition(position => {
                 resolve(position);
             }, err => {
-                console.log('There was an error using your device\'s Geolocation: ', err.message);
+                console.error('There was an error using your device\'s Geolocation: ', err.message);
                 this.setState({
                     isLoading: false
                 });
             });
         });
-    }
+    };
 
 
     getCityByCoords = coords => {
@@ -158,7 +153,7 @@ class App extends Component {
         const gMapsLatLng = { lat: parseFloat(gMapsLatLngStr[0]), lng: parseFloat(gMapsLatLngStr[1]) };
         const geocoder = new window.google.maps.Geocoder();
         this.geocodeLatLng(geocoder, gMapsLatLng);
-    }
+    };
 
     geocodeLatLng = (geocoder, latlng) => {
         geocoder.geocode({
@@ -176,7 +171,6 @@ class App extends Component {
                             break;
                         }
                     }
-                    console.log(cityName);
                     this.setState(prevState => ({
                         selectedCity: cityName,
                         cities: {
@@ -189,7 +183,6 @@ class App extends Component {
                             }
                         }
                     }));
-                    console.log(cityName + ' was saved to your list of cities.');
                 } else {
                     window.alert('No results found');
                 }
@@ -197,32 +190,32 @@ class App extends Component {
                 window.alert('Geocoder failed due to: ' + status);
             }
         });
-    }
+    };
 
 
     saveLocalStorage = () => {
         if (storageAvailable('localStorage')) {
             // Yippee! We can use localStorage awesomeness
-            console.log('Local Storage available');
             localStorage.setItem('ReactWeatherApp', JSON.stringify(this.state));
         }
         else {
             // Too bad, no localStorage for us
-            console.log('No Local Storage available. Sorry!');
         }
-    }
+    };
 
 
     render = () => {
         const api = this.state.weatherAPIData;
         const selectedCity = this.state.selectedCity;
-        const currentTemperature = Math.round(api.currently.temperature);
-        const currentSummary = api.currently.summary;
-        const date = (api.currently.time * 1000);
+        const currentTemperature = Math.round(api.current.temp);
+        const currentSummary = api.current.weather[0].description;
+        const date = (api.current.dt * 1000);
 
         return (
             <div className="site">
+
                 <Indicator isLoading={this.state.isLoading} />
+
                 <Drawer
                     cities={Object.keys(this.state.cities)}
                     selectCity={this.selectCity}
@@ -240,7 +233,7 @@ class App extends Component {
                     <h1>{selectedCity}</h1>
                     <div className="appheader__content">
                         <div>
-                            <WeatherIcon icon={api.currently.icon} />
+                            <WeatherIcon icon={api.current.weather[0].icon} />
                         </div>
                         <div className="appheader__right">
                             <div className="currTemp">{currentTemperature}°</div>
@@ -250,7 +243,7 @@ class App extends Component {
                 </div>
 
                 <div className="panel">
-                    <ForecastList listItems={api.daily.data} />
+                    <ForecastList listItems={api.daily} />
                 </div>
 
 
@@ -260,7 +253,7 @@ class App extends Component {
 
             </div>
         );
-    }
+    };
 }
 
 export default App;

@@ -2,22 +2,30 @@ import React from 'react';
 import './styles.css';
 
 const icons = {
-  "clear-day" : "icon-1",
-  "clear-night" : "icon-2",
-  "rain" : "icon-8",
-  "snow" : "icon-11",
-  "sleet" : "icon-10",
-  "wind" : "icon-3",
-  "fog" : "icon-7",
-  "cloudy" : "icon-12",
-  "partly-cloudy-day" : "icon-5",
-  "partly-cloudy-night" : "icon-6"
+  "01d": "icon-1",
+  "01n": "icon-2",
+  "02d": "icon-5",
+  "02n": "icon-6",
+  "03d": "icon-12",
+  "03n": "icon-12",
+  "04d": "icon-12",
+  "04n": "icon-12",
+  "09d": "icon-8",
+  "09n": "icon-8",
+  "10d": "icon-8",
+  "10n": "icon-8",
+  "11d": "icon-3",
+  "11n": "icon-3",
+  "13d": "icon-10",
+  "13n": "icon-10",
+  "50d": "icon-7",
+  "50n": "icon-7"
 };
 
 const WeatherIcon = props => {
-    return (
-        <span className={icons[props.icon]}></span>
-    );
-}
+  return (
+    <span className={icons[props.icon]}></span>
+  );
+};
 
 export default WeatherIcon;
