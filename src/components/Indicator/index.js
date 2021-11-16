@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Loader = props => {
+const Indicator = props => {
     return (
         <div className={'loader ' + (props.isLoading ? 'active' : '')}>
             <div className="loader__rotation"></div>
@@ -8,4 +8,4 @@ const Loader = props => {
     );
 }
 
-export default Loader;
+export default Indicator;

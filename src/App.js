@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Drawer from './components/Drawer';
-import Loader from './components/Loader';
+import Indicator from './components/Indicator';
 import DateComponent from './components/DateComponent';
 import ForecastList from './components/Forecastlist';
 import GetLocation from './components/GetLocation';
@@ -9,36 +9,36 @@ import { storageAvailable } from './lib/utilities';
 
 
 const initialCitiesMap = {
-  "Frankfurt am Main": {
-    "coords": {
-      "latitude": 50.1109221,
-      "longitude": 8.682126700000026
+    "Frankfurt am Main": {
+        "coords": {
+            "latitude": 50.1109221,
+            "longitude": 8.682126700000026
+        }
+    },
+    "Berlin": {
+        "coords": {
+            "latitude": 52.52000659999999,
+            "longitude": 13.404953999999975
+        }
+    },
+    "London": {
+        "coords": {
+            "latitude": 51.5073509,
+            "longitude": -0.12775829999998223
+        }
+    },
+    "New York": {
+        "coords": {
+            "latitude": 40.7127837,
+            "longitude": -74.00594130000002
+        }
+    },
+    "Los Angeles": {
+        "coords": {
+            "latitude": 34.0522342,
+            "longitude": -118.2436849
+        }
     }
-  },
-  "Berlin": {
-    "coords": {
-      "latitude": 52.52000659999999,
-      "longitude": 13.404953999999975
-    }
-  },
-  "London": {
-    "coords": {
-      "latitude": 51.5073509,
-      "longitude": -0.12775829999998223
-    }
-  },
-  "New York": {
-    "coords": {
-      "latitude": 40.7127837,
-      "longitude": -74.00594130000002
-    }
-  },
-  "Los Angeles": {
-    "coords": {
-      "latitude": 34.0522342,
-      "longitude": -118.2436849
-    }
-  }
 }
 
 
@@ -46,7 +46,7 @@ class App extends Component {
 
     constructor(props) {
         super(props);
-        if(!localStorage.getItem('ReactWeatherApp')) {
+        if (!localStorage.getItem('ReactWeatherApp')) {
             this.state = {
                 selectedCity: Object.keys(initialCitiesMap)[0],
                 cities: initialCitiesMap,
@@ -65,28 +65,28 @@ class App extends Component {
     }
 
     componentDidMount = () => {
-        this.setState({isLoading: true});
+        this.setState({ isLoading: true });
         this.getWeatherData(this.state.cities[this.state.selectedCity]);
     }
 
     getWeatherData = city => {
-        const {latitude, longitude} = city.coords;
+        const { latitude, longitude } = city.coords;
         const latlng = latitude + "," + longitude;
         const APIEndpoint = 'https://api.teamdigitalcreative.com/darksky/';
         const apiURL = APIEndpoint + latlng + '?units=si&exclude=flags,hourly,minutely,alerts&' + Date.now();
 
         fetch(apiURL)
-        .then(res => res.ok ? Promise.resolve(res) : res.json().then(Promise.reject.bind(Promise)))
-        .then(res => res.json())
-        .then(data => {
-            console.log(data);
-            this.setState(prevState => ({
-                weatherAPIData: data,
-                isLoading: false
-            }), this.saveLocalStorage);
-        }).catch(err => {
-            console.log(err);
-        });
+            .then(res => res.ok ? Promise.resolve(res) : res.json().then(Promise.reject.bind(Promise)))
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                this.setState(prevState => ({
+                    weatherAPIData: data,
+                    isLoading: false
+                }), this.saveLocalStorage);
+            }).catch(err => {
+                console.log(err);
+            });
     }
 
 
@@ -107,7 +107,7 @@ class App extends Component {
 
     selectCity = event => {
         const city = event.target.innerText;
-        if(this.state.selectedCity !== city) {
+        if (this.state.selectedCity !== city) {
             this.setState(prevState => ({
                 selectedCity: city,
                 isLoading: true,
@@ -125,7 +125,7 @@ class App extends Component {
             drawerOpen: false
         }));
 
-        if(navigator.geolocation) {
+        if (navigator.geolocation) {
             this.getDeviceGeoLocation()
                 .then(position => {
                     console.dir(position);
@@ -155,7 +155,7 @@ class App extends Component {
 
     getCityByCoords = coords => {
         const gMapsLatLngStr = coords.split(',', 2);
-        const gMapsLatLng = {lat: parseFloat(gMapsLatLngStr[0]), lng: parseFloat(gMapsLatLngStr[1])};
+        const gMapsLatLng = { lat: parseFloat(gMapsLatLngStr[0]), lng: parseFloat(gMapsLatLngStr[1]) };
         const geocoder = new window.google.maps.Geocoder();
         this.geocodeLatLng(geocoder, gMapsLatLng);
     }
@@ -169,8 +169,8 @@ class App extends Component {
                 if (results) {
                     const result = results[0].address_components;
                     let cityName = '';
-                    for(let i=0; i < result.length; ++i) {
-                        if((result[i].types.includes('locality') && result[i].long_name.length > 1)
+                    for (let i = 0; i < result.length; ++i) {
+                        if ((result[i].types.includes('locality') && result[i].long_name.length > 1)
                             || result[i].types.includes('administrative_area_level_1')) {
                             cityName = result[i].long_name;
                             break;
@@ -222,7 +222,7 @@ class App extends Component {
 
         return (
             <div className="site">
-                <Loader isLoading={this.state.isLoading} />
+                <Indicator isLoading={this.state.isLoading} />
                 <Drawer
                     cities={Object.keys(this.state.cities)}
                     selectCity={this.selectCity}
