@@ -49,6 +49,10 @@ h2 {
     margin: 0 0 30px;
 }
 
+a {
+    color: #3d408f;
+}
+
 .no-select {
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -112,22 +116,24 @@ h2 {
     align-self: flex-end;
 }
 
-.Drawer {
+.drawer {
+    display: flex;
+    flex-direction: column;
     color: rgba(0, 0, 0, 0.87);
     position: fixed;
     top: 0;
     left: 0;
     height: 100%;
-    width: 256px;
-    background-color: #f5f5f5;
+    width: calc(100% - 56px);
+    max-width: 320px;
+    background-color: #fff;
     box-shadow: 2px 0px 8px rgba(0, 0, 0, 0.24);
     text-align: left;
     z-index: 2;
     overflow-y: auto;
     transition: 195ms;
     transition-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
-    -webkit-transform: translateX(-266px);
-    transform: translateX(-266px);
+    transform: translateX(-103%);
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -135,18 +141,17 @@ h2 {
     -webkit-tap-highlight-color: transparent;
 }
 
-.Drawer.active {
+.drawer.active {
     transition: 225ms;
     transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-    -webkit-transform: translateX(0px);
     transform: translateX(0px);
 }
 
-.Drawer.active .drawer__activate {
+.drawer.active .drawer__activate {
     display: none;
 }
 
-.Drawer h2 {
+.drawer h2 {
     text-transform: uppercase;
     font-size: 14px;
     color: rgba(0, 0, 0, 0.54);
@@ -192,6 +197,13 @@ h2 {
     align-items: center;
 }
 
+.site-info {
+    background-color: #f3f5fa;
+    padding: 12px 24px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
 .getLocation {
     position: absolute;
     top: 21px;
@@ -205,6 +217,10 @@ h2 {
     -ms-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+}
+
+.Citylist {
+    flex-grow: 1;
 }
 
 .Citylist ul {

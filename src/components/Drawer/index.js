@@ -8,7 +8,7 @@ class Drawer extends Component {
 
         this.state = {
             inlineStyle: {}
-        }
+        };
 
         this.drawer = {
             startX: 0,
@@ -23,7 +23,7 @@ class Drawer extends Component {
     }
 
     componentDidUpdate() {
-        if(this.props.isActive) {
+        if (this.props.isActive) {
             document.body.classList.add('drawer--open');
         } else {
             document.body.classList.remove('drawer--open');
@@ -38,14 +38,14 @@ class Drawer extends Component {
     }
 
     onTouchMoveHandler(event) {
-        if(!this.drawer.isTouched) {
+        if (!this.drawer.isTouched) {
             return;
         }
         this.drawer.currX = event.touches[0].pageX;
     }
 
     onTouchEndHandler(event) {
-        if(!this.drawer.isTouched) {
+        if (!this.drawer.isTouched) {
             return;
         }
         this.drawer.isTouched = false;
@@ -54,9 +54,9 @@ class Drawer extends Component {
             inlineStyle: {
                 transform: ''
             }
-        }
+        };
 
-        if(Math.min(0, this.drawer.currX - this.drawer.startX) < -40 ) {
+        if (Math.min(0, this.drawer.currX - this.drawer.startX) < -40) {
             this.props.toggleDrawer();
         }
 
@@ -64,7 +64,7 @@ class Drawer extends Component {
     }
 
     swipeDrawer() {
-        if(!this.drawer.isTouched) {
+        if (!this.drawer.isTouched) {
             return;
         }
         requestAnimationFrame(this.swipeDrawer);
@@ -82,7 +82,7 @@ class Drawer extends Component {
     render() {
 
         return (
-            <div className={'Drawer' + (this.props.isActive ? ' active' : '')}
+            <aside className={'drawer' + (this.props.isActive ? ' active' : '')}
                 onTouchStart={this.onTouchHandler}
                 onTouchMove={this.onTouchMoveHandler}
                 onTouchEnd={this.onTouchEndHandler}
@@ -92,8 +92,13 @@ class Drawer extends Component {
                     <h2>Select a city</h2>
                     <i onClick={this.props.toggleDrawer} className="material-icons drawer__close">close</i>
                 </div>
+
                 <Citylist cities={this.props.cities} selectCity={this.props.selectCity} getLocation={this.props.getLocation} />
-            </div>
+
+                <div class="site-info">
+                    Project by <a href="https://www.awmedia.de/">awmedia</a> and <a href="https://www.digital-creative.de/">digitalcreative</a>
+                </div>
+            </aside>
         );
     }
 }
