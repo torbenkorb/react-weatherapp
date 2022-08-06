@@ -1,11 +1,12 @@
 import React from 'react';
+import './index.css';
 
-const Indicator = props => {
+const ProgressIndicator = props => {
     return (
         <div className={'loader ' + (props.isLoading ? 'active' : '')}>
             <div className="loader__rotation"></div>
         </div>
     );
-}
+};
 
-export default Indicator;
+export default ProgressIndicator;
