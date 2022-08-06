@@ -95,7 +95,7 @@ class Drawer extends Component {
 
                 <Citylist cities={this.props.cities} selectCity={this.props.selectCity} getLocation={this.props.getLocation} />
 
-                <div class="site-info">
+                <div className="site-info">
                     Project by <a href="https://www.awmedia.de/">awmedia</a> and <a href="https://www.digital-creative.de/">digitalcreative</a>
                 </div>
             </aside>
