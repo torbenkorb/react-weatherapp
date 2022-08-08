@@ -7,23 +7,16 @@
 }
 
 .List li {
-    border-top: 1px solid rgba(255,255,255,0.12);
+    border-top: 1px solid var(--cinder-700);
     padding: 14px 0;
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-            justify-content: space-between;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .List li:first-of-type {
-  border: 0;
+    border: 0;
 }
-
 
 .List span {
     font-size: 36px;
@@ -40,12 +33,12 @@
     display: -ms-flexbox;
     display: flex;
     -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
 }
 
 .forecast__summary {
-    color: rgba(255,255,255,0.5);
+    color: var(--cinder-300);
     margin-top: 4px;
     overflow: hidden;
     white-space: nowrap;

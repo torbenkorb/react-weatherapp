@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Citylist from '../Citylist';
+import { ReactComponent as CloseIcon } from '../../icons/close.svg';
 
-class Drawer extends Component {
+class NavigationDrawer extends Component {
 
     constructor(props) {
         super(props);
@@ -90,7 +91,7 @@ class Drawer extends Component {
 
                 <div className="drawer__header">
                     <h2>Select a city</h2>
-                    <i onClick={this.props.toggleDrawer} className="material-icons drawer__close">close</i>
+                    <button className='drawer__close' onClick={this.props.toggleDrawer} aria-label="Close"><CloseIcon /></button>
                 </div>
 
                 <Citylist cities={this.props.cities} selectCity={this.props.selectCity} getLocation={this.props.getLocation} />
@@ -103,4 +104,4 @@ class Drawer extends Component {
     }
 }
 
-export default Drawer;
+export default NavigationDrawer;

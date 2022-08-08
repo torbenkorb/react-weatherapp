@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import Drawer from './components/Drawer';
-import Indicator from './components/Indicator';
+import NavigationDrawer from './components/NavigationDrawer';
+import ProgressIndicator from './components/ProgressIndicator';
 import DateComponent from './components/DateComponent';
 import ForecastList from './components/Forecastlist';
 import GetLocation from './components/GetLocation';
-import WeatherIcon from './components/WeatherIcon';
+import CurrentData from "./components/CurrentData";
 import { storageAvailable } from './lib/utilities';
+import { ReactComponent as MenuIcon } from './icons/menu.svg';
+import { ReactComponent as UpdateIcon } from './icons/update.svg';
+
 
 
 const initialCitiesMap = {
@@ -220,9 +223,9 @@ class App extends Component {
         return (
             <div className="site">
 
-                <Indicator isLoading={this.state.isLoading} />
+                <ProgressIndicator isLoading={this.state.isLoading} />
 
-                <Drawer
+                <NavigationDrawer
                     cities={Object.keys(this.state.cities)}
                     selectCity={this.selectCity}
                     isActive={this.state.drawerOpen}
@@ -230,31 +233,25 @@ class App extends Component {
                 />
 
                 <div className="app__topbar">
-                    <div className="drawer__activate" onClick={this.toggleDrawer}><i className="material-icons">menu</i></div>
+                    <div className="drawer__activate" onClick={this.toggleDrawer}><MenuIcon /></div>
                     <GetLocation getCurrentLocation={this.getCurrentLocation} />
                 </div>
 
 
-                <div className="App-header">
-                    <h1>{selectedCity}</h1>
-                    <div className="appheader__content">
-                        <div>
-                            <WeatherIcon icon={api.current.weather[0].icon} />
-                        </div>
-                        <div className="appheader__right">
-                            <div className="currTemp">{currentTemperature}°</div>
-                            <div className="currSum">{currentSummary}</div>
-                        </div>
-                    </div>
-                </div>
-
                 <div className="panel">
+
+                    <CurrentData
+                        city={selectedCity}
+                        temp={currentTemperature}
+                        summary={currentSummary}
+                        icon={api.current.weather[0].icon} />
+
                     <ForecastList listItems={api.daily} />
-                </div>
 
+                    <div className="update-app"><button onClick={this.updateWeather} aria-label="Update"><UpdateIcon /></button> Last updated:&nbsp;
+                        <DateComponent timestamp={date} />
+                    </div>
 
-                <div className="update-app hint"><i className="material-icons no-select" onClick={this.updateWeather}>update</i> Last updated:&nbsp;
-                    <DateComponent timestamp={date} />
                 </div>
 
             </div>

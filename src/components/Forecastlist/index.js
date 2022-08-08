@@ -12,7 +12,7 @@ class ForecastList extends Component {
                 <li key={index}>
                     <div className="forecast__meta">
                         <DateComponent timestamp={dateObject} removeTime={true} />
-                        <div className="forecast__summary">{item.weather[0].description}</div>
+                        <div className="summary forecast__summary">{item.weather[0].description}</div>
                     </div>
                     <div className="forecast__currTemp">
                         <div>
