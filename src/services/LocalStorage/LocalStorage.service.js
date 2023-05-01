@@ -1,8 +1,24 @@
-export const sameDay = (d1, d2) => {
-  return d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate();
-};
+class LocalStorage {
+    constructor() {
+        this.key = 'ReactWeatherApp';
+    }
+
+    getData() {
+        return JSON.parse(window.localStorage.getItem(this.key));
+    }
+
+    storeData(data) {
+        window.localStorage.setItem(this.key, JSON.stringify(data));
+    }
+
+    hasData() {
+        return window.localStorage.getItem(this.key);
+    }
+
+
+}
+
+export default new LocalStorage();
 
 export const storageAvailable = type => {
     try {
@@ -12,7 +28,7 @@ export const storageAvailable = type => {
         storage.removeItem(x);
         return true;
     }
-    catch(e) {
+    catch (e) {
         return e instanceof DOMException && (
             // everything except Firefox
             e.code === 22 ||

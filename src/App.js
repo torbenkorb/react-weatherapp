@@ -1,55 +1,23 @@
 import React, { Component } from 'react';
+import LocalStorage from './services/LocalStorage/LocalStorage.service';
+import OpenWeatherMapService from './services/OpenWeatherMap/OpenWeatherMap.service';
 import NavigationDrawer from './components/NavigationDrawer';
 import ProgressIndicator from './components/ProgressIndicator';
 import DateComponent from './components/DateComponent';
 import ForecastList from './components/Forecastlist';
 import GetLocation from './components/GetLocation';
 import CurrentData from "./components/CurrentData";
-import { storageAvailable } from './lib/utilities';
-import { ReactComponent as MenuIcon } from './icons/menu.svg';
-import { ReactComponent as UpdateIcon } from './icons/update.svg';
-
-
-
-const initialCitiesMap = {
-    "Frankfurt am Main": {
-        "coords": {
-            "latitude": 50.1109221,
-            "longitude": 8.682126700000026
-        }
-    },
-    "Berlin": {
-        "coords": {
-            "latitude": 52.52000659999999,
-            "longitude": 13.404953999999975
-        }
-    },
-    "London": {
-        "coords": {
-            "latitude": 51.5073509,
-            "longitude": -0.12775829999998223
-        }
-    },
-    "New York": {
-        "coords": {
-            "latitude": 40.7127837,
-            "longitude": -74.00594130000002
-        }
-    },
-    "Los Angeles": {
-        "coords": {
-            "latitude": 34.0522342,
-            "longitude": -118.2436849
-        }
-    }
-};
+import { ReactComponent as MenuIcon } from './assets/icons/menu.svg';
+import { ReactComponent as UpdateIcon } from './assets/icons/update.svg';
+import { initialCitiesMap } from './utils/constants/cities';
 
 
 class App extends Component {
-
     constructor(props) {
         super(props);
-        if (!localStorage.getItem('ReactWeatherApp')) {
+        if (LocalStorage.hasData()) {
+            this.state = LocalStorage.getData();
+        } else {
             this.state = {
                 selectedCity: Object.keys(initialCitiesMap)[0],
                 cities: initialCitiesMap,
@@ -68,8 +36,6 @@ class App extends Component {
                     daily: []
                 }
             };
-        } else {
-            this.state = JSON.parse(localStorage.getItem('ReactWeatherApp'));
         }
     }
 
@@ -79,33 +45,24 @@ class App extends Component {
     };
 
     getWeatherData = city => {
-        const { latitude, longitude } = city.coords;
-        const latlng = `lat=${latitude}&lon=${longitude}`;
-        const APIEndpoint = 'https://j3kw67la1a.execute-api.eu-central-1.amazonaws.com/onecall?';
-        const apiURL = APIEndpoint + latlng + '&units=metric&exclude=minutely,hourly&' + Date.now();
-
-        fetch(apiURL)
-            .then(res => res.ok ? Promise.resolve(res) : res.json().then(Promise.reject.bind(Promise)))
-            .then(res => res.json())
+        return OpenWeatherMapService.getWeather(city)
             .then(data => {
                 this.setState(prevState => ({
                     weatherAPIData: data,
                     isLoading: false
-                }), this.saveLocalStorage);
+                }), this.storeData);
             }).catch(err => {
                 console.error(err);
             });
     };
 
-
-    updateWeather = () => {
+    onUpdateWeather = () => {
         this.setState(prevState => ({
             isLoading: true,
             drawerOpen: false
         }));
         this.getWeatherData(this.state.cities[this.state.selectedCity]);
     };
-
 
     toggleDrawer = () => {
         this.setState(prevState => ({
@@ -135,13 +92,26 @@ class App extends Component {
         if (navigator.geolocation) {
             this.getDeviceGeoLocation()
                 .then(position => {
+                    OpenWeatherMapService.getLocationName(position)
+                        .then(data => {
+                            const cityName = data[0].name;
+                            this.setState(prevState => ({
+                                selectedCity: cityName,
+                                cities: {
+                                    ...prevState.cities,
+                                    [cityName]: {
+                                        coords: {
+                                            latitude: position.coords.latitude,
+                                            longitude: position.coords.longitude
+                                        }
+                                    }
+                                }
+                            }), this.storeData);
+                        });
                     this.getWeatherData(position);
-                    const coordsString = position.coords.latitude + ',' + position.coords.longitude;
-                    this.getCityByCoords(coordsString);
                 });
         }
     };
-
 
     getDeviceGeoLocation = () => {
         return new Promise((resolve, reject) => {
@@ -156,60 +126,8 @@ class App extends Component {
         });
     };
 
-
-    getCityByCoords = coords => {
-        const gMapsLatLngStr = coords.split(',', 2);
-        const gMapsLatLng = { lat: parseFloat(gMapsLatLngStr[0]), lng: parseFloat(gMapsLatLngStr[1]) };
-        const geocoder = new window.google.maps.Geocoder();
-        this.geocodeLatLng(geocoder, gMapsLatLng);
-    };
-
-    geocodeLatLng = (geocoder, latlng) => {
-        geocoder.geocode({
-            'location': latlng,
-            'region': 'es'
-        }, (results, status) => {
-            if (status === window.google.maps.GeocoderStatus.OK) {
-                if (results) {
-                    const result = results[0].address_components;
-                    let cityName = '';
-                    for (let i = 0; i < result.length; ++i) {
-                        if ((result[i].types.includes('locality') && result[i].long_name.length > 1)
-                            || result[i].types.includes('administrative_area_level_1')) {
-                            cityName = result[i].long_name;
-                            break;
-                        }
-                    }
-                    this.setState(prevState => ({
-                        selectedCity: cityName,
-                        cities: {
-                            ...prevState.cities,
-                            [cityName]: {
-                                coords: {
-                                    latitude: latlng.lat,
-                                    longitude: latlng.lng
-                                }
-                            }
-                        }
-                    }));
-                } else {
-                    window.alert('No results found');
-                }
-            } else {
-                window.alert('Geocoder failed due to: ' + status);
-            }
-        });
-    };
-
-
-    saveLocalStorage = () => {
-        if (storageAvailable('localStorage')) {
-            // Yippee! We can use localStorage awesomeness
-            localStorage.setItem('ReactWeatherApp', JSON.stringify(this.state));
-        }
-        else {
-            // Too bad, no localStorage for us
-        }
+    storeData = () => {
+        LocalStorage.storeData(this.state);
     };
 
 
@@ -248,7 +166,7 @@ class App extends Component {
 
                     <ForecastList listItems={api.daily} />
 
-                    <div className="update-app"><button onClick={this.updateWeather} aria-label="Update"><UpdateIcon /></button> Last updated:&nbsp;
+                    <div className="update-app"><button onClick={this.onUpdateWeather} aria-label="Update"><UpdateIcon /></button> Last updated:&nbsp;
                         <DateComponent timestamp={date} />
                     </div>
 

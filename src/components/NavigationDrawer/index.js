@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Citylist from '../Citylist';
-import { ReactComponent as CloseIcon } from '../../icons/close.svg';
+import { Citylist } from '../index';
+import { ReactComponent as CloseIcon } from '../../assets/icons/close.svg';
 
 class NavigationDrawer extends Component {
 

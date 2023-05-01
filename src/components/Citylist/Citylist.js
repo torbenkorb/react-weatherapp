@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './index.css';
+import './Citylist.css';
 
 class Citylist extends Component {
 

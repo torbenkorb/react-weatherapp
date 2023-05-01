@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactComponent as LocationIcon } from '../../icons/location.svg';
+import { ReactComponent as LocationIcon } from '../../assets/icons/location.svg';
 
 const GetLocation = props => {
     return (
