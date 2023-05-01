@@ -64,7 +64,7 @@ class App extends Component {
         this.getWeatherData(this.state.cities[this.state.selectedCity]);
     };
 
-    toggleDrawer = () => {
+    onToggleDrawer = () => {
         this.setState(prevState => ({
             drawerOpen: !prevState.drawerOpen
         }));
@@ -147,11 +147,11 @@ class App extends Component {
                     cities={Object.keys(this.state.cities)}
                     selectCity={this.selectCity}
                     isActive={this.state.drawerOpen}
-                    toggleDrawer={this.toggleDrawer}
+                    toggleDrawer={this.onToggleDrawer}
                 />
 
                 <div className="app__topbar">
-                    <div className="drawer__activate" onClick={this.toggleDrawer}><MenuIcon /></div>
+                    <div className="drawer__activate" onClick={this.onToggleDrawer}><MenuIcon /></div>
                     <GetLocation getCurrentLocation={this.getCurrentLocation} />
                 </div>
 

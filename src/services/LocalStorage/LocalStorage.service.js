@@ -1,6 +1,7 @@
 class LocalStorage {
     constructor() {
         this.key = 'ReactWeatherApp';
+        this.storageAvailable = storageAvailable('localStorage');
     }
 
     getData() {
@@ -14,13 +15,11 @@ class LocalStorage {
     hasData() {
         return window.localStorage.getItem(this.key);
     }
-
-
 }
 
 export default new LocalStorage();
 
-export const storageAvailable = type => {
+function storageAvailable(type) {
     try {
         var storage = window[type],
             x = '__storage_test__';
