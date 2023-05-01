@@ -1,21 +1,21 @@
 {
   "files": {
     "main.css": "/react-weatherapp/static/css/main.9608b7a2.css",
-    "main.js": "/react-weatherapp/static/js/main.9467049e.js",
+    "main.js": "/react-weatherapp/static/js/main.5f901f6c.js",
     "static/media/digicon.svg?f408f0": "/react-weatherapp/static/media/digicon.3a4987577b10a358be2c.svg",
     "static/media/digicon.eot?f408f0": "/react-weatherapp/static/media/digicon.921af996a218f04369bb.eot",
     "static/media/digicon.woff?f408f0": "/react-weatherapp/static/media/digicon.fae28c79eff756adf9e4.woff",
     "static/media/digicon.ttf?f408f0": "/react-weatherapp/static/media/digicon.e8b2fcb4eeb2f28a5473.ttf",
-    "index.html": "/react-weatherapp/index.html",
     "static/media/location.svg": "/react-weatherapp/static/media/location.cc8cd6419cb547bbb6a01d574c241409.svg",
+    "index.html": "/react-weatherapp/index.html",
     "static/media/update.svg": "/react-weatherapp/static/media/update.f5078906d6cdee5d62d952dd8d096daa.svg",
     "static/media/close.svg": "/react-weatherapp/static/media/close.88706c15c05797b2b46ef360785bda46.svg",
     "static/media/menu.svg": "/react-weatherapp/static/media/menu.ea123e6fd6ba7831157b1c068e42ee06.svg",
     "main.9608b7a2.css.map": "/react-weatherapp/static/css/main.9608b7a2.css.map",
-    "main.9467049e.js.map": "/react-weatherapp/static/js/main.9467049e.js.map"
+    "main.5f901f6c.js.map": "/react-weatherapp/static/js/main.5f901f6c.js.map"
   },
   "entrypoints": [
     "static/css/main.9608b7a2.css",
-    "static/js/main.9467049e.js"
+    "static/js/main.5f901f6c.js"
   ]
 }
